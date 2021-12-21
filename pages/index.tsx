@@ -48,10 +48,6 @@ export const getStaticProps: GetStaticProps = async () => {
       identifier: process.env.AUTH_IDENTIFIER,
       password: process.env.AUTH_PASSWORD,
     });
-    if (auth.data === null) {
-      throw { message: auth.error.message }
-      return { notFound: true }
-    }
 
     // STRAPI GET 
     const query = qs.stringify({
@@ -65,7 +61,12 @@ export const getStaticProps: GetStaticProps = async () => {
       encodeValuesOnly: true,
     });
 
-    const { data } = await axios.get(`${strapiHost}/api/articles?${query}`)
+    const { data } = await axios.get(`${strapiHost}/api/articles?${query}`, {
+      headers: {
+        Authorization:
+          `Bearer ${auth.jwt}`,
+      },
+    })
 
     const articles = await data.data
 
