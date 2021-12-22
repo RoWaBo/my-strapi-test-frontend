@@ -2,14 +2,14 @@ import axios from 'axios';
 import type { GetStaticProps, NextPage } from 'next'
 import Image from "next/image";
 import qs from 'qs'
+import { getStrapiMedia, getStrapiURL } from '../helperFunctions';
 import { Article } from '../types/collectionTypes';
 
 interface HomeProps {
   articles: Article[]
-  strapiHost: string
 }
 
-const Home: NextPage<HomeProps> = ({ articles, strapiHost }) => {
+const Home: NextPage<HomeProps> = ({ articles }) => {
   return (
     <>
       {console.log(articles)}
@@ -22,13 +22,15 @@ const Home: NextPage<HomeProps> = ({ articles, strapiHost }) => {
           {article.attributes.image?.data !== null && (
             <div className='mt-4'>
               <div className="relative w-full h-80 bg-gray-200 rounded-lg overflow-hidden">
-                <Image
-                  src={strapiHost + article.attributes.image?.data.attributes.url}
-                  alt={article.attributes.image?.data.attributes.alternativeText}
-                  layout="fill"
-                  quality={70}
-                  className="object-center object-cover"
-                />
+                {article.attributes.image?.data.attributes.url !== undefined && (
+                  <Image
+                    src={getStrapiMedia(article.attributes.image?.data.attributes.url)}
+                    alt={article.attributes.image?.data.attributes.alternativeText}
+                    layout="fill"
+                    quality={70}
+                    className="object-center object-cover"
+                  />
+                )}
               </div>
             </div>
           )}
@@ -41,10 +43,8 @@ const Home: NextPage<HomeProps> = ({ articles, strapiHost }) => {
 export const getStaticProps: GetStaticProps = async () => {
 
   try {
-    const strapiHost = process.env.STRAPI_HOST
-
     // STRAPI AUTH
-    const { data: auth } = await axios.post(strapiHost + '/api/auth/local', {
+    const { data: auth } = await axios.post(getStrapiURL('/api/auth/local'), {
       identifier: process.env.AUTH_IDENTIFIER,
       password: process.env.AUTH_PASSWORD,
     });
@@ -61,7 +61,7 @@ export const getStaticProps: GetStaticProps = async () => {
       encodeValuesOnly: true,
     });
 
-    const { data } = await axios.get(`${strapiHost}/api/articles?${query}`, {
+    const { data } = await axios.get(getStrapiURL(`/api/articles?${query}`), {
       headers: {
         Authorization:
           `Bearer ${auth.jwt}`,
@@ -72,8 +72,7 @@ export const getStaticProps: GetStaticProps = async () => {
 
     return {
       props: {
-        articles,
-        strapiHost
+        articles
       },
       revalidate: 60,
     };
