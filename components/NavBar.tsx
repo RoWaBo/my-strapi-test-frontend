@@ -1,17 +1,19 @@
 /* This example requires Tailwind CSS v2.0+ */
 import { Disclosure } from '@headlessui/react'
 import { MenuIcon, XIcon } from '@heroicons/react/outline'
+import { FC } from 'react'
+import { NavigationMenu } from '../types/singleTypes'
 import NavLink from './NavLink'
 
-const navigation = [
-  { name: 'Home', href: '/' },
-  { name: 'About', href: '/about' },
-  { name: 'Publications', href: '/publications' },
-  { name: 'Teaching/courses', href: '/kontakt' },
-  { name: 'Contact', href: '/contact' },
-]
+interface NavBarProps {
+  menu: NavigationMenu
+}
 
-const NavBar = () => {
+const NavBar: FC<NavBarProps> = ({ menu }) => {
+
+  const navigation = menu.attributes.Menu_item
+  const logo = menu.attributes.logo
+
   return (
     <Disclosure as="nav" className="bg-white shadow-sm">
       {({ open }) => (
@@ -32,7 +34,7 @@ const NavBar = () => {
               <div className="flex-1 flex items-center justify-center h-full sm:items-stretch sm:justify-start">
                 <div className="flex-shrink-0 flex items-center h-full">
                   <NavLink href="/" className="border-none h-full">
-                    <h1 className="text-lg text-gray-600">Merete Watt Boolsen</h1>
+                    <h1 className="text-lg text-gray-600">{logo}</h1>
                   </NavLink>
                 </div>
                 <div className="hidden sm:block ml-auto">
