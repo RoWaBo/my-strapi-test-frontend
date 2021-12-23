@@ -7,10 +7,13 @@ import App from 'next/app'
 import axios from 'axios'
 import { getStrapiURL } from '../helperFunctions'
 import qs from 'qs'
+import { NavigationMenu } from '../types/singleTypes'
 
-function MyApp({ Component, pageProps, navMenu }: AppProps) {
-  console.log(navMenu);
+type MyAppProps = AppProps & {
+  navMenu: NavigationMenu
+}
 
+function MyApp({ Component, pageProps, navMenu }: MyAppProps) {
   return (
     <>
       <AppHead />
