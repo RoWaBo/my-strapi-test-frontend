@@ -19,7 +19,7 @@ const NavLink: React.FC<NavLinkProps> = ({ href, children, className, ...props }
             {...props}
         >
             <a
-                className={`flex items-center px-3 py-2 text-sm font-medium w-full hover:bg-gray-100 hover:text-black ${className} ${activePassiveStyle}`}>
+                className={`flex items-center px-3 py-2 text-sm font-medium w-full hover:bg-gray-100 hover:text-black capitalize ${className} ${activePassiveStyle}`}>
                 {children}
             </a>
         </Link>

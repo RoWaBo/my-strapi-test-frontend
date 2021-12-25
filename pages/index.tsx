@@ -21,10 +21,10 @@ const Home: NextPage<HomeProps> = ({ articles }) => {
     <>
       {console.log(articles)}
       {articles.map((article, index) => (
-        <article key={article.id} className={`mb-10 md:mb-20 md:flex gap-14 ${flexDirection(index)}`}>
+        <article key={article.id} className={`mb-10 md:mb-20 md:flex gap-24 ${flexDirection(index)}`}>
           {/* TEXT SECTION */}
           <div className='flex-1'>
-            <h2 className='mb-4'>{article.attributes.title}</h2>
+            <h2 className='mb-4 capitalize'>{article.attributes.title}</h2>
             <ReactMarkdown className='react-markdown'>{article.attributes.description}</ReactMarkdown>
           </div>
           {/* IMAGE SECTION */}
