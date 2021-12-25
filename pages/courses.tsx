@@ -6,24 +6,57 @@ import { FunctionComponent } from "react";
 import ReactMarkdown from "react-markdown";
 import { getStrapiURL } from "../helperFunctions";
 import { Course } from "../types/collectionTypes";
+import { EventInfo } from "../types/components";
 
 interface CoursesProps {
     courses: Course[]
 }
 
 const Courses: FunctionComponent<CoursesProps> = ({ courses }) => {
-    console.log(courses);
-    const createDate = (date: string) => {
-        const newDate = new Date(date)
-        console.log(newDate);
-        // return newDate.toString()
+
+    const sortByDate = (events: EventInfo[]) => {
+        return events.sort((a, b) => new Date(b.start_date).valueOf() - new Date(a.start_date).valueOf())
     }
+
+    const formatDate = (date: string) => {
+        const dateSplit = date.split('-')
+        const year = dateSplit[0]
+        let month = dateSplit[1]
+        switch (month) {
+            case '01': month = 'Jan'
+                break;
+            case '02': month = 'Feb'
+                break;
+            case '03': month = 'Mar'
+                break;
+            case '04': month = 'Apr'
+                break;
+            case '05': month = 'May'
+                break;
+            case '06': month = 'Jun'
+                break;
+            case '07': month = 'Jul'
+                break;
+            case '08': month = 'Aug'
+                break;
+            case '09': month = 'Sep'
+                break;
+            case '10': month = 'Oct'
+                break;
+            case '11': month = 'Nov'
+                break;
+            case '12': month = 'Dec'
+                break;
+        }
+        return `${month} ${year}`
+    }
+
     return (
         <>
             {courses.map(course => (
-                <article key={course.id} className="shadow border rounded-lg overflow-hidden">
-                    <header className="p-4 border-b-2">
-                        <h2 className="capitalize text-2xl md:text-3xl">{course.attributes.title}</h2>
+                <article key={course.id} className="shadow-lg border rounded-lg overflow-hidden mb-10 py-4 bg-white">
+                    <header className="px-4 pb-8">
+                        <h2 className="capitalize text-xl md:text-3xl">{course.attributes.title}</h2>
                         {course.attributes.description && (
                             <>
                                 <ReactMarkdown className="mt-2">{course.attributes.description}</ReactMarkdown>
@@ -31,17 +64,16 @@ const Courses: FunctionComponent<CoursesProps> = ({ courses }) => {
                         )}
                     </header>
                     <ul>
-                        {course.attributes.course_event?.map(event => (
-                            <li key={event.id} className="border-b py-4 mx-9">
-                                {createDate(event.start_date)}
-                                <h3 className="text-lg mb-1">{event.title}</h3>
+                        {course.attributes.course_event && sortByDate(course.attributes.course_event).map(event => (
+                            <li key={event.id} className="border-t py-4 px-10 list-disc">
+                                <h3 className="text-base mb-1">{event.title}</h3>
                                 <div className="flex items-center">
                                     <CalendarIcon height={17} width={17} className="text-gray-500 mr-2" />
-                                    <p className="text-sm text-gray-500">{event.start_date}</p>
+                                    <p className="text-sm text-gray-500">{formatDate(event.start_date)}</p>
                                     {event.End_date && (
                                         <>
                                             <MinusIcon height={10} width={10} className="text-gray-500 mx-[6px] mt-[2px]" />
-                                            <p className="text-sm text-gray-500">{event.End_date}</p>
+                                            <p className="text-sm text-gray-500">{formatDate(event.End_date)}</p>
                                         </>
                                     )}
                                 </div>
