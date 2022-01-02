@@ -23,6 +23,7 @@ export interface Course {
     title: string;
     description?: string;
     course_event?: EventInfo[];
+    sort_course_events_by_newest_date: null | boolean;
   };
   id: number;
 }

@@ -6,7 +6,6 @@ import { FunctionComponent } from "react";
 import ReactMarkdown from "react-markdown";
 import { getStrapiURL } from "../helperFunctions";
 import { Course } from "../types/collectionTypes";
-import { EventInfo } from "../types/components";
 
 interface CoursesProps {
     courses: Course[]
@@ -14,8 +13,14 @@ interface CoursesProps {
 
 const Courses: FunctionComponent<CoursesProps> = ({ courses }) => {
 
-    const sortByDate = (events: EventInfo[]) => {
-        return events.sort((a, b) => new Date(b.start_date).valueOf() - new Date(a.start_date).valueOf())
+    const sortByDate = (course: Course) => {
+        const courseEvents = course.attributes.course_event
+        const sortByNewestDate = course.attributes.sort_course_events_by_newest_date
+
+        if (sortByNewestDate && courseEvents) {
+            return courseEvents.sort((a, b) => new Date(b.start_date).valueOf() - new Date(a.start_date).valueOf())
+        }
+        return courseEvents
     }
 
     const formatDate = (date: string) => {
@@ -64,7 +69,7 @@ const Courses: FunctionComponent<CoursesProps> = ({ courses }) => {
                         )}
                     </header>
                     <ul>
-                        {course.attributes.course_event && sortByDate(course.attributes.course_event).map(event => (
+                        {course && sortByDate(course).map(event => (
                             <li key={event.id} className="border-t py-4 px-10 list-disc">
                                 <h3 className="text-base mb-1">{event.title}</h3>
                                 <div className="flex items-center">
@@ -100,7 +105,7 @@ export const getStaticProps: GetStaticProps = async () => {
 
         // STRAPI GET 
         const query = qs.stringify({
-            fields: ['title', 'description'],
+            fields: ['title', 'description', 'sort_course_events_by_newest_date'],
             populate: {
                 course_event: {
                     populate: {
