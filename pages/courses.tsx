@@ -1,10 +1,10 @@
-import { CalendarIcon, MinusIcon } from "@heroicons/react/outline";
+import { CalendarIcon, DocumentDownloadIcon, LinkIcon, MinusIcon } from "@heroicons/react/outline";
 import axios from "axios";
 import { GetStaticProps } from "next";
 import qs from "qs";
 import { FunctionComponent } from "react";
 import ReactMarkdown from "react-markdown";
-import { getStrapiURL } from "../helperFunctions";
+import { getStrapiURL, getStrapiMedia } from "../helperFunctions";
 import { Course } from "../types/collectionTypes";
 
 interface CoursesProps {
@@ -59,8 +59,8 @@ const Courses: FunctionComponent<CoursesProps> = ({ courses }) => {
     return (
         <>
             {courses.map(course => (
-                <article key={course.id} className="shadow-lg border rounded-lg overflow-hidden mb-10 py-4 bg-white">
-                    <header className="px-4 pb-8">
+                <article key={course.id} className="shadow-lg border rounded-lg overflow-hidden mb-10 py-6 bg-white">
+                    <header className="px-6 pb-8">
                         <h2 className="capitalize text-xl md:text-3xl">{course.attributes.title}</h2>
                         {course.attributes.description && (
                             <>
@@ -70,17 +70,33 @@ const Courses: FunctionComponent<CoursesProps> = ({ courses }) => {
                     </header>
                     <ul>
                         {course && sortByDate(course).map(event => (
-                            <li key={event.id} className="border-t py-4 px-10 list-disc">
+                            <li key={event.id} className="border-t py-4 px-10 md:px-14 list-disc">
                                 <h3 className="text-base mb-1">{event.title}</h3>
-                                <div className="flex items-center">
-                                    <CalendarIcon height={17} width={17} className="text-gray-500 mr-2" />
-                                    <p className="text-sm text-gray-500">{formatDate(event.start_date)}</p>
-                                    {event.End_date && (
-                                        <>
-                                            <MinusIcon height={10} width={10} className="text-gray-500 mx-[6px] mt-[2px]" />
-                                            <p className="text-sm text-gray-500">{formatDate(event.End_date)}</p>
-                                        </>
+                                <div className="md:flex">
+                                    <div className="flex items-center">
+                                        <CalendarIcon height={17} width={17} className="text-gray-500 mr-2" />
+                                        <p className="text-sm text-gray-500">{formatDate(event.start_date)}</p>
+                                        {event.End_date && (
+                                            <>
+                                                <MinusIcon height={10} width={10} className="text-gray-500 mx-[6px] mt-[2px]" />
+                                                <p className="text-sm text-gray-500">{formatDate(event.End_date)}</p>
+                                            </>
+                                        )}
+                                    </div>
+
+                                    {event.link && (
+                                        <a href={event.link} target="_blank" className="flex items-center text-gray-500 mt-1 md:mt-0 md:ml-3 md:pl-3 md:border-l-2 hover:underline">
+                                            <LinkIcon height={17} width={17} className="mr-2" />
+                                            <p>{event.link}</p>
+                                        </a>
                                     )}
+                                    {event.files?.data !== null && event.files?.data.map(file => (
+                                        <a key={file.id} href={getStrapiMedia(file.attributes.url)} target="_blank" className="flex items-center text-gray-500 mt-1 md:mt-0 md:ml-3 md:pl-3 md:border-l-2 hover:underline">
+                                            <DocumentDownloadIcon height={17} width={17} className="mr-2" />
+                                            <p>{file.attributes.name}</p>
+                                        </a>
+                                    ))
+                                    }
                                 </div>
                                 {event.description && (
                                     <p className="mt-4">{event.description}</p>
