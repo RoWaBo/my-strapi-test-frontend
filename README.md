@@ -1,3 +1,4 @@
+## [View project documentation](https://github.com/RoWaBo/my-strapi-test-frontend/blob/main/Roberts-Strapi-CMS.docx) 
 
 ## Getting Started
 
